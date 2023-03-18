@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter/services.dart';
+import 'package:vibration_web/vibration_web.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -55,6 +56,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  static const vibrate = MethodCall('vibrate', {
+    'duration': 100,
+    'pattern': [200, 100, 200]
+  });
+  static const hasVibrator = MethodCall('hasVibrator');
+  VibrationWebPlugin vibration = VibrationWebPlugin();
 
   void _incrementCounter() {
     setState(() {
@@ -65,6 +72,13 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+    _vibration();
+  }
+
+  Future<void> _vibration() async {
+    if (await vibration.handleMethodCall(hasVibrator)) {
+      vibration.handleMethodCall(vibrate);
+    }
   }
 
   @override

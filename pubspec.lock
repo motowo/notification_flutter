@@ -221,6 +221,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  vibration_web:
+    dependency: "direct main"
+    description:
+      name: vibration_web
+      sha256: "9126c3941ca2af78a3bd7d412f34d0d2e48a52bca8a307c49970d5dbb97a7f12"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.6.5"
 sdks:
   dart: ">=2.19.4 <3.0.0"
   flutter: ">=1.20.0"
