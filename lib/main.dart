@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:vibration_web/vibration_web.dart';
+import 'package:vibration/vibration.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -56,12 +56,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  static const vibrate = MethodCall('vibrate', {
-    'duration': 100,
-    'pattern': [200, 100, 200]
-  });
-  static const hasVibrator = MethodCall('hasVibrator');
-  VibrationWebPlugin vibration = VibrationWebPlugin();
 
   void _incrementCounter() {
     setState(() {
@@ -72,12 +66,16 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
-    _vibration();
+    _vibrate();
   }
 
-  Future<void> _vibration() async {
-    if (await vibration.handleMethodCall(hasVibrator)) {
-      vibration.handleMethodCall(vibrate);
+  Future<void> _vibrate() async {
+    if (await Vibration.hasVibrator() ?? false) {
+      List<int> pattern = [];
+      for (var i = 0; i < _counter; i++) {
+        pattern.addAll([100, 100]);
+      }
+      Vibration.vibrate(pattern: pattern);
     }
   }
 
@@ -131,5 +129,13 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+}
+
+class _Vibration {
+  Future<void> vibrate() async {
+    if (await Vibration.hasVibrator() ?? false) {
+      Vibration.vibrate(pattern: [500, 100, 500, 100, 500]);
+    }
   }
 }
